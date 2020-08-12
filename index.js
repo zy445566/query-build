@@ -42,7 +42,7 @@ class QueryBuild {
         }
     }
 
-    foreachQueryBuild (dataList, keys) {
+    foreachQueryBuild(dataList, keys) {
         const builder = [];
         let bind = [];
         for(const data of dataList) {
@@ -58,6 +58,23 @@ class QueryBuild {
             builder.push(`(${sqlBuilder.builder.join(' , ')})`)
         }
         const sql = builder.join(',')
+        return {
+            sql,
+            bind
+        }
+    }
+    
+    mergeBuild(...builderList) {
+        let sql = '';
+        let bind = [];
+        for(const builder of builderList) {
+            if(typeof builder === 'string') {
+                sql+=builder;
+            } else {
+                sql+=builder.sql;
+                bind = bind.concat(builder.bind);
+            }
+        }
         return {
             sql,
             bind
