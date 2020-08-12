@@ -1,0 +1,25 @@
+{
+  "name": "query-build",
+  "version": "1.0.0",
+  "description": "sql query build tools",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zy445566/query-build.git"
+  },
+  "keywords": [
+    "sql",
+    "build",
+    "query",
+    "mysql"
+  ],
+  "author": "zy445566",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zy445566/query-build/issues"
+  },
+  "homepage": "https://github.com/zy445566/query-build#readme"
+}
