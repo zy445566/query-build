@@ -180,7 +180,6 @@ export enum Op {
 };
 
 export abstract class QueryBuild {
-    table:string;
     abstract where(where:Object, connect:Connect=Connect.and):SqlBind;
 
     abstract set(prop:Object):SqlBind;
