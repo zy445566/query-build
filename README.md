@@ -1,5 +1,5 @@
 # query-build
-sql query build tools
+sql query build tools，make native SQL and ORM will be mixed to write, complement each other.
 
 # install
 ```sh
