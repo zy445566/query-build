@@ -59,6 +59,22 @@ const testUnit = {
             bind: [ 'zs', 20, 1, 'ls' ]
         })
     },
+    [Symbol('test.mergeBuild:set2')] : async function() {
+        assert.deepEqual(queryBuild.merge(
+            'UPDATE users',
+            {
+                sql:'SET name = ?, age = ?',
+                bind:['zs', 20]
+            },
+            {
+                sql:'WHERE id = ? AND name = ?',
+                bind:[1, 'ls']
+            },
+        ),{
+            sql: 'UPDATE users SET name = ?, age = ? WHERE id = ? AND name = ?',
+            bind: [ 'zs', 20, 1, 'ls' ]
+        })
+    },
     [Symbol('test.mergeBuild:delete')] : async function() {
         assert.deepEqual(queryBuild.merge(
             'DELETE FROM users',

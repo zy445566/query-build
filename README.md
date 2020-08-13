@@ -38,6 +38,18 @@ queryBuild.merge(
     'WHERE',
     queryBuild.where({id:1, name:'ls'}),
 )
+// OR
+queryBuild.merge(
+    'UPDATE users',
+    {
+        sql:'SET name = ?, age = ?',
+        bind:['zs', 20]
+    },
+    {
+        sql:'WHERE id = ? AND name = ?',
+        bind:[1, 'ls']
+    },
+)
 /**
 output:
 {
@@ -82,6 +94,26 @@ output:
     bind: [ 1, 'zs' ]
 }
  * /
+```
+
+# core api
+```ts
+class SqlBind {
+    sql:string;
+    bind:Array<any>
+}
+class Connect = {
+    and:Symbol('and');
+    or:Symbol('or');
+}
+
+queryBuild.merge(builderDataList:Array<string|SqlBind>):SqlBind;
+
+queryBuild.where(where:Object, connect:Connect):SqlBind;
+
+queryBuild.set(prop:Object):SqlBind;
+
+queryBuild.foreach(dataList:Array<Object>, keys:Array<string>):SqlBind;
 ```
 
 # feature
