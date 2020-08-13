@@ -1,5 +1,5 @@
-const assert =  require('assert')
-const QueryBuild = require('./index')
+import assert from 'assert'
+import {QueryBuild,Connect,Op} from './index'
 const queryBuild = new QueryBuild();
 
 const testUnit = {
@@ -38,9 +38,9 @@ const testUnit = {
         assert.deepEqual(queryBuild.merge(
             'SELECT * FROM users WHERE',
             queryBuild.where({name:'zs', age:20}),
-            'AND','(',queryBuild.where({vip:1,group:'admin'},queryBuild.Connect.or),')',
+            'AND','(',queryBuild.where({vip:1,group:'admin'},Connect.or),')',
             'AND',queryBuild.where({
-                id:{[queryBuild.Op.in]:[1,2,3]}
+                id:{[Op.in]:[1,2,3]}
             }),
             'GROUP BY order'
         ),{

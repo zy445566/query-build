@@ -1,28 +1,28 @@
-const util = require('./util')
-const {Connect,getConnectSql,Op,getOpSqlBind} = require('./enumobj')
-class QueryBuild {
-    constructor(table='') {
+import util from './util'
+import {SqlBind, sqlBuilder, Connect,getConnectSql,getOpSqlBind} from './enumobj'
+export { Connect, Op } from './enumobj'
+export class QueryBuild {
+    table:string;
+    constructor(table:string='') {
         this.table = table;
-        this.Connect = Connect;
-        this.Op = Op;
     }
-    where(data, connect=Connect.and) {
-        const builderFunc = (data, key) => {
-            if(data[key]===null) {
+    where(where:Object, connect:Connect=Connect.and):SqlBind {
+        const builderFunc = (where:Object, key:string):SqlBind => {
+            if(where[key]===null) {
                 return {
                     sql:`${key} IS NULL`,
                     bind:[],
                 }
             }
-            if(typeof data[key]==="object") {
-                return getOpSqlBind(data, key);
+            if(typeof where[key]==="object") {
+                return getOpSqlBind(where, key);
             }
             return {
                 sql:`${key} = ?`,
-                bind:[data[key]],
+                bind:[where[key]],
             }
         }
-        const sqlBuilder = util.build(data, Object.keys(data),builderFunc);
+        const sqlBuilder = util.build(where, Object.keys(where),builderFunc);
         const connectSQL = getConnectSql(connect);
         return {
             sql:sqlBuilder.builder.join(` ${connectSQL} `),
@@ -30,33 +30,33 @@ class QueryBuild {
         }
     }
 
-    set(data) {
-        const builderFunc = (data, key) => {
+    set(prop:Object):SqlBind {
+        const builderFunc = (prop:Object, key:string):SqlBind => {
             return {
                 sql:`${key} = ?`,
-                bind:[data[key]],
+                bind:[prop[key]],
             }
         }
-        const sqlBuilder = util.build(data, Object.keys(data),builderFunc);
+        const sqlBuilder = util.build(prop, Object.keys(prop),builderFunc);
         return {
             sql:sqlBuilder.builder.join(', '),
             bind:sqlBuilder.bind
         }
     }
 
-    foreach(dataList, keys) {
+    foreach(propList:Array<Object>, keys:Array<string>):SqlBind {
         const sqlBuilder = {
             builder:[],
             bind:[]
         }
-        const builderFunc = (data, key) => {
+        const builderFunc = (prop:Object, key:string):SqlBind => {
             return {
                 sql:`?`,
-                bind:[data[key]],
+                bind:[prop[key]],
             }
         }
-        for(const data of dataList) {
-            const sqlBuilderData = util.build(data, keys, builderFunc);
+        for(const prop of propList) {
+            const sqlBuilderData = util.build(prop, keys, builderFunc);
             // 请不要使用push(...sqlBuilderData.bind) 数组过大会爆栈
             sqlBuilder.bind = sqlBuilder.bind.concat(sqlBuilderData.bind);
             sqlBuilder.builder.push(`(${sqlBuilderData.builder.join(', ')})`)
@@ -68,17 +68,17 @@ class QueryBuild {
         }
     }
     
-    merge(...builderDataList) {
+    merge(...sqlBindList:Array<string|SqlBind>):SqlBind {
         const sqlBuilder = {
             builder:[],
             bind:[]
         }
 
-        for(const builderData of builderDataList) {
-            if(typeof builderData === 'string') {
-                sqlBuilder.builder.push(builderData.trim());
+        for(const sqlBindData of sqlBindList) {
+            if(typeof sqlBindData === 'string') {
+                sqlBuilder.builder.push(sqlBindData.trim());
             } else {
-                util.concatBuilder(sqlBuilder, builderData)
+                util.concatBuilder(sqlBuilder, sqlBindData)
             }
         }
         const sql = sqlBuilder.builder.join(' ')
@@ -88,4 +88,4 @@ class QueryBuild {
         }
     }
 }
-module.exports = QueryBuild.default = QueryBuild;
+export default QueryBuild;

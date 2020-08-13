@@ -1,10 +1,12 @@
 {
   "name": "query-build",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "sql query build tools",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test.js"
+    "prepare": "npm run build",
+    "build": "npx tsc",
+    "test": "npm run build && node ./build/test.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/zy445566/query-build/issues"
   },
-  "homepage": "https://github.com/zy445566/query-build#readme"
+  "homepage": "https://github.com/zy445566/query-build#readme",
+  "devDependencies": {
+    "@types/node": "^14.0.27",
+    "typescript": "^3.9.3"
+  }
 }
