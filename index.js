@@ -1,48 +1,34 @@
+const util = require('./util')
 class QueryBuild {
-    queryBuild(keys, conditionFunc) {
-        const builder = [];
-        const bind = [];
-        for(const key of keys) {
-            const condition = conditionFunc(key)
-            builder.push(condition.sql);
-            if(!condition.done) {
-                bind.push(condition.value);
-            }
-        }
-        return {
-            builder,
-            bind 
-        }
-    }
-    whereQueryBuild(data, connect='AND') {
+    where(data, connect='AND') {
         const conditionFunc = (key) => {
             return {
                 sql:`${key} = ?`,
                 value:data[key],
             }
         }
-        const sqlBuilder = this.queryBuild(Object.keys(data),conditionFunc);
+        const sqlBuilder = util.build(Object.keys(data),conditionFunc);
         return {
             sql:sqlBuilder.builder.join(` ${connect} `),
             bind:sqlBuilder.bind
         }
     }
 
-    setQueryBuild(data) {
+    set(data) {
         const conditionFunc = (key) => {
             return {
                 sql:`${key} = ?`,
                 value:data[key],
             }
         }
-        const sqlBuilder = this.queryBuild(Object.keys(data),conditionFunc);
+        const sqlBuilder = util.build(Object.keys(data),conditionFunc);
         return {
-            sql:sqlBuilder.builder.join(' , '),
+            sql:sqlBuilder.builder.join(', '),
             bind:sqlBuilder.bind
         }
     }
 
-    foreachQueryBuild(dataList, keys) {
+    foreach(dataList, keys) {
         const builder = [];
         let bind = [];
         for(const data of dataList) {
@@ -52,10 +38,10 @@ class QueryBuild {
                     value:data[key],
                 }
             }
-            const sqlBuilder = this.queryBuild(keys, conditionFunc);
+            const sqlBuilder = util.build(keys, conditionFunc);
             // 请不要使用push(...sqlBuilder.bind) 数组过大会爆栈
             bind = bind.concat(sqlBuilder.bind);
-            builder.push(`(${sqlBuilder.builder.join(' , ')})`)
+            builder.push(`(${sqlBuilder.builder.join(', ')})`)
         }
         const sql = builder.join(',')
         return {
@@ -64,17 +50,18 @@ class QueryBuild {
         }
     }
     
-    mergeBuild(...builderList) {
-        let sql = '';
+    merge(...builderList) {
+        let sqlList = [];
         let bind = [];
         for(const builder of builderList) {
             if(typeof builder === 'string') {
-                sql+=builder;
+                sqlList.push(builder.trim());
             } else {
-                sql+=builder.sql;
+                sqlList.push(builder.sql.trim());
                 bind = bind.concat(builder.bind);
             }
         }
+        const sql = sqlList.join(' ')
         return {
             sql,
             bind
