@@ -1,6 +1,6 @@
 {
   "name": "query-build",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "sql query build tools，make native SQL and ORM will be mixed to write, complement each other.",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,8 @@
     "sql",
     "build",
     "query",
-    "mysql"
+    "mysql",
+    "mybatis"
   ],
   "author": "zy445566",
   "license": "MIT",
