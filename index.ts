@@ -1,6 +1,6 @@
 import util from './util'
 import {SqlBind, Connect, getConnectSql, getOpSqlBind} from './enumobj'
-export { Connect, Op } from './enumobj'
+export { SqlBind, Connect, Op } from './enumobj'
 export class QueryBuild {
     where(where:Object, connect:Connect=Connect.and):SqlBind {
         const builderFunc = (where:Object, key:string):SqlBind => {
