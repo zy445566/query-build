@@ -1,8 +1,8 @@
 {
   "name": "query-build",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "sql query build tools，make native SQL and ORM will be mixed to write, complement each other.",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "prepare": "npm run build",
     "build": "npx tsc",
