@@ -3,7 +3,9 @@
         "module": "commonjs",
         "esModuleInterop":true,
         "target":"ESNext",
-        "outDir": "./build/"
+        "outDir": "./build/",
+        "declaration": true,
+        "sourceMap": true
     },
     "include": [
         "index.ts",
