@@ -182,7 +182,7 @@ export enum Op {
 export declare class QueryBuild {
     where(where: Object, connect?: Connect): SqlBind;
     orderBy(order: Array<[string, 'asc' | 'desc' | ''] | [string]>): SqlBind;
-    limit(limit: Array<number>): SqlBind;
+    limit(limit: [number, number] | [number]): SqlBind;
     set(prop: Object): SqlBind;
     foreach(propList: Array<Object>, keys: Array<string>): SqlBind;
     merge(...sqlBindList: Array<string | SqlBind>): SqlBind;

@@ -33,7 +33,7 @@ export class QueryBuild {
         }
     }
 
-    limit(limit:Array<number>):SqlBind {
+    limit(limit:[number,number]|[number]):SqlBind {
         return {
             sql:limit.join(','),
             bind:[]
