@@ -26,6 +26,20 @@ export class QueryBuild {
         }
     }
 
+    orderBy(order:Array<[string,'asc'|'desc'|'']|[string]>):SqlBind {
+        return {
+            sql:order.map(e=>e.join(' ')).join(','),
+            bind:[]
+        }
+    }
+
+    limit(limit:Array<number>):SqlBind {
+        return {
+            sql:limit.join(','),
+            bind:[]
+        }
+    }
+
     set(prop:Object):SqlBind {
         const builderFunc = (prop:Object, key:string):SqlBind => {
             return {
