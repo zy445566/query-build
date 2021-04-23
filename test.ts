@@ -10,6 +10,20 @@ const testUnit = {
             'test.whereQueryBuild error'
         )
     },
+    [Symbol('test.order')] : async function() {
+        assert.deepEqual(
+            queryBuild.orderBy([['id','asc'],['name'],['code','desc']]),
+            { sql: 'id asc,name,code desc', bind: [] },
+            'test.orderQueryBuild error'
+        )
+    },
+    [Symbol('test.limit')] : async function() {
+        assert.deepEqual(
+            queryBuild.limit([0,15]),
+            { sql: '0,15', bind: [] },
+            'test.limitQueryBuild error'
+        )
+    },
     [Symbol('test.set')] : async function() {
         assert.deepEqual(
             queryBuild.set({id:1, name:'zs'}),
