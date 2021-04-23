@@ -1,5 +1,5 @@
 # query-build
-sql query build tools，make native SQL and ORM will be mixed to write, complement each other.
+sql query build tootom，make native SQL and ORM will be mixed to write, complement each other.
 
 # install
 ```sh
@@ -16,7 +16,7 @@ const queryBuild = new QueryBuild();
 ```ts
 queryBuild.merge(
     'SELECT * FROM users WHERE',
-    queryBuild.where({name:'zs', age:20}),
+    queryBuild.where({name:'jack', age:20}),
     'AND','(',queryBuild.where({vip:1,group:'admin'},Connect.or),')',
     'AND',queryBuild.where({
         id:{[Op.in]:[1,2,3]}
@@ -28,7 +28,7 @@ queryBuild.merge(
     'SELECT * FROM users WHERE',
     {
         sql:'name = ? AND age = ?',
-        bind:['zs', 20]
+        bind:['jack', 20]
     }
     'AND','(',queryBuild.where({vip:1,group:'admin'},Connect.or),')',
     'AND',queryBuild.where({
@@ -40,7 +40,7 @@ queryBuild.merge(
 output:
 {
     sql: 'SELECT * FROM users WHERE name = ? AND age = ? AND ( vip = ? OR group = ? ) AND id IN (?, ?, ?) GROUP BY order',
-    bind: [ 'zs', 20, 1, 'admin', 1, 2, 3 ]
+    bind: [ 'jack', 20, 1, 'admin', 1, 2, 3 ]
 }
  * /
 ```
@@ -48,25 +48,25 @@ output:
 ```ts
 queryBuild.merge(
     'UPDATE users SET',
-    queryBuild.set({name:'zs', age:20}),
+    queryBuild.set({name:'jack', age:20}),
     'WHERE',
-    queryBuild.where({id:1, name:'ls'}),
+    queryBuild.where({id:1, name:'tom'}),
 )
 // OR use SqlBind Object mixed
 queryBuild.merge(
     'UPDATE users',
     {
         sql:'SET name = ?, age = ?',
-        bind:['zs', 20]
+        bind:['jack', 20]
     },
     'WHERE',
-    queryBuild.where({id:1, name:'ls'}),
+    queryBuild.where({id:1, name:'tom'}),
 )
 /**
 output:
 {
     sql: 'UPDATE users SET name = ?, age = ? WHERE id = ? AND name = ?',
-    bind: [ 'zs', 20, 1, 'ls' ]
+    bind: [ 'jack', 20, 1, 'tom' ]
 }
  * /
 ```
@@ -77,9 +77,9 @@ queryBuild.merge(
     'VALUES',
     queryBuild.foreach(
         [
-            {name:'zs',age:20},
-            {name:'ls',age:21},
-            {name:'ww',age:22},
+            {name:'jack',age:20},
+            {name:'tom',age:21},
+            {name:'jerry',age:22},
         ],
         ['age','name']
     )
@@ -90,12 +90,12 @@ queryBuild.merge(
     'VALUES',
     {
         sql:'(?, ?)',
-        bind:[20, 'zs']
+        bind:[20, 'jack']
     },
     queryBuild.foreach(
         [
-            {name:'ls',age:21},
-            {name:'ww',age:22},
+            {name:'tom',age:21},
+            {name:'jerry',age:22},
         ],
         ['age','name']
     )
@@ -104,7 +104,7 @@ queryBuild.merge(
 output:
 {
     sql: 'INSERT INTO users (age, name) VALUES (?, ?),(?, ?),(?, ?)',
-    bind: [ 20, 'zs', 21, 'ls', 22, 'ww' ]
+    bind: [ 20, 'jack', 21, 'tom', 22, 'jerry' ]
 }
  * /
 ```
@@ -113,8 +113,8 @@ output:
 queryBuild.merge(
     'DELETE FROM users',
     'WHERE',
-    queryBuild.where({id:1, name:'zs'}),
-    'OR',queryBuild.where({name:'ls'}),
+    queryBuild.where({id:1, name:'jack'}),
+    'OR',queryBuild.where({name:'tom'}),
 )
 // OR use SqlBind Object mixed
 queryBuild.merge(
@@ -122,15 +122,43 @@ queryBuild.merge(
     'WHERE',
     {
         sql:'id = ? AND name = ?',
-        bind:[ 1, 'zs' ]
+        bind:[ 1, 'jack' ]
     },
-    'OR',queryBuild.where({name:'ls'}),
+    'OR',queryBuild.where({name:'tom'}),
 )
 /**
 output:
 {
     sql: 'DELETE FROM users WHERE id = ? AND name = ? OR name = ?',
-    bind: [ 1, 'zs', 'ls' ]
+    bind: [ 1, 'jack', 'tom' ]
+}
+ * /
+```
+
+### AOP
+```js
+const queryBuild = new Proxy(new QueryBuild(),{
+    get: function (target, propKey, receiver) {
+        if(propKey==='where'){
+            return (where,...params)=>{
+                // 强制设置为null
+                where['deleted_timestamp'] = null;
+                return Reflect.get(target, propKey, receiver)(where,...params);
+            }
+        }
+        return Reflect.get(target, propKey, receiver);
+    }
+})
+queryBuild.merge(
+    'SELECT * FROM users WHERE',
+    queryBuild.where({name:'jack'}),
+)
+
+/**
+output:
+{
+    sql: 'SELECT * FROM users WHERE name = ? AND deleted_timestamp IS NULL',
+    bind: ['jack']
 }
  * /
 ```
