@@ -179,13 +179,13 @@ export enum Op {
     notRegexp, // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
 };
 
-export abstract class QueryBuild {
-    abstract where(where:Object, connect:Connect=Connect.and):SqlBind;
-
-    abstract set(prop:Object):SqlBind;
-
-    abstract foreach(propList:Array<Object>, keys:Array<string>):SqlBind;
-    
-    abstract merge(...sqlBindList:Array<string|SqlBind>):SqlBind;
+export declare class QueryBuild {
+    where(where: Object, connect?: Connect): SqlBind;
+    orderBy(order: Array<[string, 'asc' | 'desc' | ''] | [string]>): SqlBind;
+    limit(limit: Array<number>): SqlBind;
+    set(prop: Object): SqlBind;
+    foreach(propList: Array<Object>, keys: Array<string>): SqlBind;
+    merge(...sqlBindList: Array<string | SqlBind>): SqlBind;
 }
+export default QueryBuild;
 ```
