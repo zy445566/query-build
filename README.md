@@ -142,8 +142,10 @@ const queryBuild = new Proxy(new QueryBuild(),{
         if(propKey==='where'){
             return (where,...params)=>{
                 // 强制设置为null
-                where['deleted_timestamp'] = null;
-                return Reflect.get(target, propKey, receiver)(where,...params);
+                where['platform_type'] = 1;
+                const sqlBind = Reflect.get(target, propKey, receiver)(where,...params);
+                sqlBind.sql+= 'AND deleted_timestamp IS NULL'
+                return sqlBind;
             }
         }
         return Reflect.get(target, propKey, receiver);
@@ -153,12 +155,11 @@ queryBuild.merge(
     'SELECT * FROM users WHERE',
     queryBuild.where({name:'jack'}),
 )
-
 /**
 output:
 {
-    sql: 'SELECT * FROM users WHERE name = ? AND deleted_timestamp IS NULL',
-    bind: ['jack']
+    sql: 'SELECT * FROM users WHERE name = ? AND platform_type = ? AND deleted_timestamp IS NULL',
+    bind: ['jack',1]
 }
  * /
 ```
