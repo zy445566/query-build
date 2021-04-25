@@ -141,7 +141,6 @@ const queryBuild = new Proxy(new QueryBuild(),{
     get: function (target, propKey, receiver) {
         if(propKey==='where'){
             return (where,...params)=>{
-                // 强制设置为null
                 where['platform_type'] = 1;
                 const sqlBind = Reflect.get(target, propKey, receiver)(where,...params);
                 sqlBind.sql+= 'AND deleted_timestamp IS NULL'
