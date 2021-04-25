@@ -20,8 +20,9 @@ export class QueryBuild {
         }
         const sqlBuilder = util.build(where, Object.keys(where),builderFunc);
         const connectSQL = getConnectSql(connect);
+        const sql = sqlBuilder.builder.join(` ${connectSQL} `) || '1=1';
         return {
-            sql:sqlBuilder.builder.join(` ${connectSQL} `),
+            sql,
             bind:sqlBuilder.bind
         }
     }
