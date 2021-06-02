@@ -56,9 +56,12 @@ const testUnit = {
             'AND',queryBuild.where({
                 id:{[Op.in]:[1,2,3]}
             }),
+            'AND',queryBuild.where({
+                type:{[Op.sql]:'type=1'}
+            }),
             'GROUP BY order'
         ),{
-            sql: 'SELECT * FROM users WHERE name = ? AND age = ? AND ( vip = ? OR group = ? ) AND id IN (?, ?, ?) GROUP BY order',
+            sql: 'SELECT * FROM users WHERE name = ? AND age = ? AND ( vip = ? OR group = ? ) AND id IN (?, ?, ?) AND type=1 GROUP BY order',
             bind: [ 'zs', 20, 1, 'admin', 1, 2, 3 ]
         })
     },

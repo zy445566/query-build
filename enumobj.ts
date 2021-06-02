@@ -53,6 +53,7 @@ export enum Op {
     notLike, // NOT LIKE '%hat'
     regexp, // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
     notRegexp, // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
+    sql,
 };
 
 export const OpMap = {
@@ -172,6 +173,12 @@ export const OpMap = {
         return {
             sql:`${key} NOT REGEXP/!~ ?`,
             bind:[value],
+        }
+    },
+    [Op.sql]:(_key:string, value:any):SqlBind => {
+        return {
+            sql:value,
+            bind:[],
         }
     },
 }
