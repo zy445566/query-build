@@ -54,6 +54,7 @@ export enum Op {
     regexp, // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
     notRegexp, // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
     sql,
+    sqlBind,
 };
 
 export const OpMap = {
@@ -180,6 +181,9 @@ export const OpMap = {
             sql:value,
             bind:[],
         }
+    },
+    [Op.sqlBind]:(_key:string, value:any):SqlBind => {
+        return value;
     },
 }
 
