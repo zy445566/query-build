@@ -205,6 +205,7 @@ export enum Op {
     notLike, // NOT LIKE '%hat'
     regexp, // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
     notRegexp, // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
+    sqlBind, // use sqlBind native
 };
 
 export declare class QueryBuild {
