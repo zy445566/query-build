@@ -176,7 +176,10 @@ export const OpMap = {
         }
     },
     [Op.sqlBind]:(_key:string, value:any):SqlBind => {
-        return value;
+        return {
+            sql:value.sql || '',
+            bind:value.bind || [],
+        };
     },
 }
 
