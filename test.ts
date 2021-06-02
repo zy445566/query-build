@@ -57,7 +57,10 @@ const testUnit = {
                 id:{[Op.in]:[1,2,3]}
             }),
             'AND',queryBuild.where({
-                type:{[Op.sql]:'type=1'}
+                type:{[Op.sqlBind]:{
+                    sql:'type=1',
+                    bind:[]
+                }}
             }),
             'GROUP BY order'
         ),{
