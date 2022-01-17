@@ -120,7 +120,7 @@ export const OpMap = {
         
     }, // only TRUE or FALSE
     [Op.between]:(key:string, value:any):SqlBind => {
-        if(!(value instanceof Array)){throw new Error('between need Array')}
+        if(value.length===undefined){throw new Error('between need Array')}
         if(value.length!==2){throw new Error('between need Array length is 2')}
         return {
             sql:`${key} BETWEEN ? AND ?`,
@@ -128,7 +128,7 @@ export const OpMap = {
         }
     },
     [Op.notBetween]:(key:string, value:any):SqlBind => {
-        if(!(value instanceof Array)){throw new Error('between need Array')}
+        if(value.length===undefined){throw new Error('between need Array')}
         if(value.length!==2){throw new Error('between need Array length is 2')}
         return {
             sql:`${key} NOT BETWEEN ? AND ?`,
@@ -136,7 +136,7 @@ export const OpMap = {
         }
     },
     [Op.in]:(key:string, value:any):SqlBind => {
-        if(!(value instanceof Array)){throw new Error('IN need Array')}
+        if(value.length===undefined){throw new Error('IN need Array')}
         if(value.length<=0){throw new Error('IN need Array length gt 0')}
         return {
             sql:`${key} IN (${new Array(value.length).fill('?').join(', ')})`,
@@ -144,7 +144,7 @@ export const OpMap = {
         }
     },
     [Op.notIn]:(key:string, value:any):SqlBind => {
-        if(!(value instanceof Array)){throw new Error('NOT IN need Array')}
+        if(value.length===undefined){throw new Error('NOT IN need Array')}
         if(value.length<=0){throw new Error('NOT IN need Array length gt 0')}
         return {
             sql:`${key} NOT IN (${new Array(value.length).fill('?').join(', ')})`,
