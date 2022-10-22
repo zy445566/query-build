@@ -4,35 +4,42 @@ const queryBuild = new QueryBuild();
 
 const testUnit = {
     [Symbol('test.where')] : async function() {
-        assert.deepEqual(
+        assert.deepStrictEqual(
             queryBuild.where({a:1, b:2}),
             { sql: 'a = ? AND b = ?', bind: [ 1, 2 ] },
             'test.whereQueryBuild error'
         )
     },
+    [Symbol('test.where.empty')] : async function() {
+        assert.deepStrictEqual(
+            queryBuild.where({a:1, b:{}}),
+            { sql: 'a = ?', bind: [ 1 ] },
+            'test.whereQueryBuild error'
+        )
+    },
     [Symbol('test.order')] : async function() {
-        assert.deepEqual(
+        assert.deepStrictEqual(
             queryBuild.orderBy([['id','asc'],['name'],['code','desc']]),
             { sql: 'id asc,name,code desc', bind: [] },
             'test.orderQueryBuild error'
         )
     },
     [Symbol('test.limit')] : async function() {
-        assert.deepEqual(
+        assert.deepStrictEqual(
             queryBuild.limit([0,15]),
             { sql: '0,15', bind: [] },
             'test.limitQueryBuild error'
         )
     },
     [Symbol('test.set')] : async function() {
-        assert.deepEqual(
+        assert.deepStrictEqual(
             queryBuild.set({id:1, name:'zs'}),
             { sql: 'id = ?, name = ?', bind: [ 1, 'zs' ] },
             'test.whereQueryBuild error'
         )
     },
     [Symbol('test.foreach')] : async function() {
-        assert.deepEqual(
+        assert.deepStrictEqual(
             queryBuild.foreach(
                 [
                     {name:'zs',age:20},
@@ -49,7 +56,7 @@ const testUnit = {
         )
     },
     [Symbol('test.mergeBuild:where')] : async function() {
-        assert.deepEqual(queryBuild.merge(
+        assert.deepStrictEqual(queryBuild.merge(
             'SELECT * FROM users WHERE',
             queryBuild.where({name:'zs', age:20}),
             'AND','(',queryBuild.where({vip:1,group:'admin'},Connect.or),')',
@@ -69,7 +76,7 @@ const testUnit = {
         })
     },
     [Symbol('test.mergeBuild:set')] : async function() {
-        assert.deepEqual(queryBuild.merge(
+        assert.deepStrictEqual(queryBuild.merge(
             'UPDATE users SET',
             queryBuild.set({name:'zs', age:20}),
             'WHERE',
@@ -80,7 +87,7 @@ const testUnit = {
         })
     },
     [Symbol('test.mergeBuild:set2')] : async function() {
-        assert.deepEqual(queryBuild.merge(
+        assert.deepStrictEqual(queryBuild.merge(
             'UPDATE users',
             {
                 sql:'SET name = ?, age = ?',
@@ -96,7 +103,7 @@ const testUnit = {
         })
     },
     [Symbol('test.mergeBuild:delete')] : async function() {
-        assert.deepEqual(queryBuild.merge(
+        assert.deepStrictEqual(queryBuild.merge(
             'DELETE FROM users',
             'WHERE',
             queryBuild.where({id:1, name:'zs'}),
@@ -106,7 +113,7 @@ const testUnit = {
         })
     },
     [Symbol('test.mergeBuild:foreach')] : async function() {
-        assert.deepEqual(queryBuild.merge(
+        assert.deepStrictEqual(queryBuild.merge(
             'INSERT INTO users (age, name)',
             'VALUES',
             queryBuild.foreach(
@@ -123,7 +130,7 @@ const testUnit = {
         })
     },
     [Symbol('test.mergeBuild:foreach')] : async function() {
-        assert.deepEqual(queryBuild.merge(
+        assert.deepStrictEqual(queryBuild.merge(
             'SELECT * FROM users',
             'WHERE',
             {
@@ -151,5 +158,7 @@ async function run(testUnitList) {
 }
 (async function() {
     await run([testUnit]);
-})();
+})().catch((error)=>{
+    console.error(error)
+})
 
