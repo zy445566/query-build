@@ -19,9 +19,6 @@ export const ConnectMap = {
     [Connect.or]:'OR',
 };
 
-export function getConnectSql (connect:Connect) {
-    return ConnectMap[connect]?ConnectMap[connect]:ConnectMap[Connect.and];
-}
 // [Op.gt]: 6,                // > 6
 // [Op.gte]: 6,               // >= 6
 // [Op.lt]: 10,               // < 10
@@ -181,18 +178,4 @@ export const OpMap = {
             bind:value.bind || [],
         };
     },
-}
-
-export  function getOpSqlBind (data:Object, key:string):SqlBind {
-    const opObj = data[key];
-    for(const opKey in Op) {
-        if(opObj.hasOwnProperty(Op[opKey])) {
-            const value = opObj[Op[opKey]];
-            return OpMap[Op[opKey]](key, value);
-        }
-    }
-    return {
-        sql:'',
-        bind:[]
-    }
 }

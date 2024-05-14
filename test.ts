@@ -7,35 +7,49 @@ const testUnit = {
         assert.deepStrictEqual(
             queryBuild.where({a:1, b:2}),
             { sql: 'a = ? AND b = ?', bind: [ 1, 2 ] },
-            'test.whereQueryBuild error'
+            'test.where.QueryBuild error'
+        )
+    },
+    [Symbol('test.where.op')] : async function() {
+        assert.deepStrictEqual(
+            queryBuild.where({a:{[Op.gt]:1,[Op.lt]:9}}),
+            { sql: 'a > ? AND a < ?', bind: [ 1, 9 ] },
+            'test.where.op.QueryBuild error'
+        )
+    },
+    [Symbol('test.where.op.in')] : async function() {
+        assert.deepStrictEqual(
+            queryBuild.where({a:{[Op.in]:[1,2,3]}}),
+            { sql: 'a IN (?, ?, ?)', bind: [1,2,3] },
+            'test.where.op.in.QueryBuild error'
         )
     },
     [Symbol('test.where.empty')] : async function() {
         assert.deepStrictEqual(
             queryBuild.where({a:1, b:{}}),
             { sql: 'a = ?', bind: [ 1 ] },
-            'test.whereQueryBuild error'
+            'test.where.QueryBuild error'
         )
     },
     [Symbol('test.order')] : async function() {
         assert.deepStrictEqual(
             queryBuild.orderBy([['id','asc'],['name'],['code','desc']]),
             { sql: 'id asc,name,code desc', bind: [] },
-            'test.orderQueryBuild error'
+            'test.order.QueryBuild error'
         )
     },
     [Symbol('test.limit')] : async function() {
         assert.deepStrictEqual(
             queryBuild.limit([0,15]),
             { sql: '0,15', bind: [] },
-            'test.limitQueryBuild error'
+            'test.limit.QueryBuild error'
         )
     },
     [Symbol('test.set')] : async function() {
         assert.deepStrictEqual(
             queryBuild.set({id:1, name:'zs'}),
             { sql: 'id = ?, name = ?', bind: [ 1, 'zs' ] },
-            'test.whereQueryBuild error'
+            'test.where.QueryBuild error'
         )
     },
     [Symbol('test.foreach')] : async function() {
@@ -52,7 +66,7 @@ const testUnit = {
                 sql: '(?, ?),(?, ?),(?, ?)',
                 bind: [ 20, 'zs', 21, 'ls', 22, 'ww' ]
             },
-            'test.foreachQueryBuild error'
+            'test.foreach.QueryBuild error'
         )
     },
     [Symbol('test.mergeBuild:where')] : async function() {

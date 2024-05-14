@@ -1,6 +1,6 @@
 import util from './util'
-import {SqlBind, Connect, getConnectSql, getOpSqlBind} from './enumobj'
-export { SqlBind, Connect, Op } from './enumobj'
+import {SqlBind, Connect} from './enumobj'
+export { SqlBind, Op, Connect } from './enumobj'
 export class QueryBuild {
     where(where:Object, connect:Connect=Connect.and):SqlBind {
         const builderFunc = (where:Object, key:string):SqlBind => {
@@ -11,7 +11,7 @@ export class QueryBuild {
                 }
             }
             if(typeof where[key]==="object") {
-                return getOpSqlBind(where, key);
+                return util.getOpSqlBind(where, key);
             }
             return {
                 sql:`${key} = ?`,
@@ -19,7 +19,7 @@ export class QueryBuild {
             }
         }
         const sqlBuilder = util.build(where, Object.keys(where),builderFunc);
-        const connectSQL = getConnectSql(connect);
+        const connectSQL = util.getConnectSql(connect);
         const sql = sqlBuilder.builder.join(` ${connectSQL} `) || '1=1';
         return {
             sql,
