@@ -1,23 +1,33 @@
 # query-build
+
 sql query build tootom，make native SQL and ORM will be mixed to write, complement each other.
 
 # install
+
 ```sh
 npm install query-build
 ```
 
 # exmaple
+
 ```ts
-import {QueryBuild,Connect,Op} from 'query-build'
-// const {QueryBuild,Connect,Op} = require('query-build');
+import { QueryBuild, Op } from "query-build";
+// const { QueryBuild, Op } = require('query-build');
 const queryBuild = new QueryBuild();
 ```
+
 ### SELECT
+
 ```ts
 queryBuild.merge(
     'SELECT * FROM users WHERE',
     queryBuild.where({name:'jack', age:20}),
-    'AND','(',queryBuild.where({vip:1,group:'admin'},Connect.or),')',
+    'AND',
+        "(",
+        queryBuild.where({ vip: 1 }),
+        " OR ",
+        queryBuild.where({ group: "admin" }),
+        ")",
     'AND',queryBuild.where({
         id:{[Op.in]:[1,2,3]}
     }),
@@ -36,7 +46,12 @@ queryBuild.merge(
         sql:'name = ? AND age = ?',
         bind:['jack', 20]
     }
-    'AND','(',queryBuild.where({vip:1,group:'admin'},Connect.or),')',
+    'AND',
+        "(",
+        queryBuild.where({ vip: 1 }),
+        " OR ",
+        queryBuild.where({ group: "admin" }),
+        ")",
     'AND',queryBuild.where({
         id:{[Op.in]:[1,2,3]}
     }),
@@ -56,7 +71,9 @@ output:
 }
  * /
 ```
+
 ### UPDATE
+
 ```ts
 queryBuild.merge(
     'UPDATE users SET',
@@ -82,7 +99,9 @@ output:
 }
  * /
 ```
+
 ### INSERT
+
 ```ts
 queryBuild.merge(
     'INSERT INTO users (age, name)',
@@ -120,7 +139,9 @@ output:
 }
  * /
 ```
+
 ### DELETE
+
 ```ts
 queryBuild.merge(
     'DELETE FROM users',
@@ -148,6 +169,7 @@ output:
 ```
 
 ### AOP
+
 ```js
 const queryBuild = new Proxy(new QueryBuild(),{
     get: function (target, propKey, receiver) {
@@ -176,16 +198,14 @@ output:
 ```
 
 # Core Api
+
 ```ts
 // SqlBind is anywhere,mixed anywhere
 export type SqlBind = {
-    sql:string;
-    bind:Array<any>
-}
-export enum Connect {
-    and,
-    or,
-}
+  sql: string;
+  bind: Array<any>;
+};
+
 // [Op.gt]: 6,                // > 6
 // [Op.gte]: 6,               // >= 6
 // [Op.lt]: 10,               // < 10
@@ -202,31 +222,31 @@ export enum Connect {
 // [Op.regexp]: '^[h|a|t]'    // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
 // [Op.notRegexp]: '^[h|a|t]' // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
 export enum Op {
-    gt, // > 6
-    gte, // >= 6
-    lt, // < 10
-    lte, // <= 10
-    ne, // != 20
-    eq, // = 3
-    not, // IS NOT TRUE
-    between, // BETWEEN 6 AND 10
-    notBetween, // NOT BETWEEN 11 AND 15
-    in, // IN (1, 2)
-    notIn, // NOT IN (1, 2)
-    like, // LIKE '%hat'
-    notLike, // NOT LIKE '%hat'
-    regexp, // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
-    notRegexp, // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
-    sqlBind, // use sqlBind native
-};
+  gt, // > 6
+  gte, // >= 6
+  lt, // < 10
+  lte, // <= 10
+  ne, // != 20
+  eq, // = 3
+  not, // IS NOT TRUE
+  between, // BETWEEN 6 AND 10
+  notBetween, // NOT BETWEEN 11 AND 15
+  in, // IN (1, 2)
+  notIn, // NOT IN (1, 2)
+  like, // LIKE '%hat'
+  notLike, // NOT LIKE '%hat'
+  regexp, // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
+  notRegexp, // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
+  sqlBind, // use sqlBind native
+}
 
 export declare class QueryBuild {
-    where(where: Object, connect?: Connect): SqlBind;
-    orderBy(order: Array<[string, 'asc' | 'desc' | ''] | [string]>): SqlBind;
-    limit(limit: [number, number] | [number]): SqlBind;
-    set(prop: Object): SqlBind;
-    foreach(propList: Array<Object>, keys: Array<string>): SqlBind;
-    merge(...sqlBindList: Array<string | SqlBind>): SqlBind;
+  where(where: Object): SqlBind;
+  orderBy(order: Array<[string, "asc" | "desc" | ""] | [string]>): SqlBind;
+  limit(limit: [number, number] | [number]): SqlBind;
+  set(prop: Object): SqlBind;
+  foreach(propList: Array<Object>, keys: Array<string>): SqlBind;
+  merge(...sqlBindList: Array<string | SqlBind>): SqlBind;
 }
 export default QueryBuild;
 ```
