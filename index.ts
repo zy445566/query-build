@@ -10,6 +10,12 @@ export class QueryBuild {
           bind: [],
         };
       }
+      if (Array.isArray(where[key])) {
+        return {
+          sql: `${key} IN (${new Array(where[key].length).fill("?").join(", ")})`,
+          bind: where[key],
+        };
+      }
       if (typeof where[key] === "object") {
         return util.getOpSqlBind(where, key);
       }
